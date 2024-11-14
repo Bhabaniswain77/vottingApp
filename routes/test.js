@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const Candidate = require("../models/candidate");
 
@@ -38,7 +39,7 @@ router.patch("/candidate/:candidateId/votes/:voteId", async (req, res) => {
 
   try {
     const response = await Candidate.findOneAndUpdate(
-      { _id: candidateId, "votes._id": voteId },
+      { _id: candidateId, "votes.user": voteId },
       { $set: { "votes.$.name": name } },
       { new: true }
     );
@@ -51,6 +52,23 @@ router.patch("/candidate/:candidateId/votes/:voteId", async (req, res) => {
     res.status(200).json({ message: "Voter name updated successfully" });
   } catch (err) {
     console.log("Error in Vote Upadte", err);
+    res.status(500).json({ message: "Something went Wrong!!" });
+  }
+});
+
+// let ids = ["6732f8f1b163f7f788a3a587", "6732fd0709eb7050b88833bd"];
+
+router.post("/gettingIdData", async (req, res) => {
+  const ids = req.body.ids;
+  console.log("Hitting", ids);
+  try {
+    const objectIds = ids.map((id) => new mongoose.Types.ObjectId(id));
+    console.log("Hitting", objectIds);
+    const users = await User.find({ _id: { $nin: objectIds } });
+    res.json(users);
+    console.log(users);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Something went Wrong!!" });
   }
 });
