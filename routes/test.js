@@ -65,7 +65,7 @@ router.post("/gettingIdData", async (req, res) => {
     const objectIds = ids.map((id) => new mongoose.Types.ObjectId(id));
     console.log("Hitting", objectIds);
     const users = await User.find({ _id: { $nin: objectIds } });
-    res.status(200).json({message:"Fetching success",users});
+    res.status(200).json({message:"Fetching success"});
     console.log(users);
   } catch (err) {
     console.log(err);
