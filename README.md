@@ -1,5 +1,5 @@
 Voting App Backend
-This is the backend service for a Voting App built with [mention the framework and language, e.g., Node.js, Express, MongoDb, etc.]. This backend manages user registration, authentication, and voting functionality, allowing users to vote on various topics securely.
+This is the backend service for a Voting App built with [framework and language, e.g., Node.js, Express, MongoDb, etc.]. This backend manages user registration, authentication, and voting functionality, allowing users to vote on various topics securely.
 
 Features
 User Authentication (Register/Login)
