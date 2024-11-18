@@ -48,7 +48,17 @@ router.patch("/candidate/:candidateId/votes/:voteId", async (req, res) => {
       return res.status(404).json({ message: "Candidate or Vote not found" });
     }
 
-    console.log("Vote name updated successfully", response);
+    const userResponse = await User.findOneAndUpdate(
+      { _id: voteId },
+      { $set: { name: name } },
+      { new: true }
+    );
+
+    if (!userResponse) {
+      return res.status(404).json({ message: "Candidate or Vote not found" });
+    }
+
+    console.log("Vote name updated successfully", response,">>>>>>>>>>>>...............<<<<<<<<<<<",userResponse);
     res.status(200).json({ message: "Voter name updated successfully" });
   } catch (err) {
     console.log("Error in Vote Upadte", err);
