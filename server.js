@@ -1,5 +1,4 @@
 const express = require("express");
-const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
@@ -20,7 +19,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-app.use(helmet());
 
 app.use("/user", userRoutes);
 app.use("/candidate", candidateRoutes);
