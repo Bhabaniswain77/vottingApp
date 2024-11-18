@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
     unique: true,
+    validate: {
+      validator: function (v) {
+        return /^\d{12}$/.test(v); // Require exactly 12 characters
+      },
+      message: 'Product code must be exactly 12 characters long.',
+    },
   },
   password: {
     type: String,
