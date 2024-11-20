@@ -18,14 +18,13 @@ const checkAdminRole = async (userId) => {
 };
 
 const Loginlimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, 
-  max: 5, 
+  windowMs: 10 * 60 * 1000,
+  max: 5,
   message: "Too many requests, please try again later!",
 });
 
-
 //router to add a candidate
-router.post("/", jwtAuthMiddleware,Loginlimiter, async (req, res) => {
+router.post("/", jwtAuthMiddleware, Loginlimiter, async (req, res) => {
   try {
     if (!(await checkAdminRole(req.user.id)))
       return res.status(403).json({ message: "User dont have admin Role.." });
