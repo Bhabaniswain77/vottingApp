@@ -58,7 +58,12 @@ router.patch("/candidate/:candidateId/votes/:voteId", async (req, res) => {
       return res.status(404).json({ message: "Candidate or Vote not found" });
     }
 
-    console.log("Vote name updated successfully", response,">>>>>>>>>>>>...............<<<<<<<<<<<",userResponse);
+    console.log(
+      "Vote name updated successfully",
+      response,
+      ">>>>>>>>>>>>...............<<<<<<<<<<<",
+      userResponse
+    );
     res.status(200).json({ message: "Voter name updated successfully" });
   } catch (err) {
     console.log("Error in Vote Upadte", err);
@@ -75,11 +80,62 @@ router.post("/gettingIdData", async (req, res) => {
     const objectIds = ids.map((id) => new mongoose.Types.ObjectId(id));
     console.log("Hitting", objectIds);
     const users = await User.find({ _id: { $nin: objectIds } });
-    res.status(200).json({message:"Fetching success"});
+    res.status(200).json({ message: "Fetching success" });
     console.log(users);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Something went Wrong!!" });
+  }
+});
+
+router.delete("/removeUser/:userID/addressId/:addressId", async (req, res) => {
+  const userId = req.params.userID;
+  const addressId = parseInt(req.params.addressId);
+
+  console.log(`Hitting${addressId} with userId ${userId}`);
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { address: { addressId: addressId } } }
+    );
+
+    console.log(`AddressID ${addressId} deleted Success...`);
+    res.status(200).json({ message: "Address deleted successfully." });
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({ error: "Internal Server Error." });
+  }
+});
+
+router.post("/addAddress/:userID", async (req, res) => {
+  const userId = req.params.userID;
+  const { addressId, Area } = req.body;
+
+  try {
+    if (!addressId || !Area) {
+      return res
+        .status(400)
+        .json({ error: "AddressId and Area are required." });
+    }
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $push: { address: { addressId, Area } } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    res.status(200).json({ message: "Address added successfully.", user });
+  } catch (err) {
+    console.error("Error during address addition:", err);
+    res.status(500).json({ error: "Internal Server Error." });
   }
 });
 
